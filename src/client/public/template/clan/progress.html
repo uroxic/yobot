@@ -134,11 +134,14 @@
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column prop="sl" label="SL" width="55" sortable>
+        <el-table-column prop="sl" label="SL" width="70" sortable>
           <template slot-scope="scope">
             <template v-if="today==-1">-</template>
+            <template v-if="scope.row.sl==today">
+              <a>已使用</a>
+            </template>
             <template v-else>
-              <i class="el-icon-smoking" :style="{color:(scope.row.sl==today?'#F56C6C':'#67C23A')}"></i>
+              <a>-</a>
             </template>
           </template>
         </el-table-column>
