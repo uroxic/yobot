@@ -109,7 +109,7 @@ class debut:
                                    [ctx['user_id']][1]) + '次出道申请\n'
                     msg += self.debut2[randint(0, len(self.debut2)-1)]
                     return msg
-        if cmd == '查看出道记录':
+        elif cmd == '查看出道记录':
             if ctx['message_type'] == 'group':
                 if ctx['group_id'] not in self.debut:
                     return '本群无人出道'
@@ -123,7 +123,7 @@ class debut:
                     msg += '总计 ' + \
                         str(len(self.debut[ctx['group_id']])) + ' 人出道'
                     return msg
-        if cmd == '清空出道记录':
+        elif cmd == '清空出道记录':
             if ctx['message_type'] == 'group':
                 if ctx['user_id'] in self.admin_list:
                     if ctx['group_id'] not in self.debut:
@@ -133,7 +133,7 @@ class debut:
                         return '已清空出道记录'
                 else:
                     return f"[CQ:at,qq={ctx['user_id']}],您无权清空出道记录"
-        if cmd == '毕业':
+        elif cmd == '毕业':
             if ctx['message_type'] == 'group':
                 if ctx['user_id'] in self.admin_list:
                     gid = match.group(2) if match.group(
@@ -150,7 +150,7 @@ class debut:
                         return f"[CQ:at,qq={gid}]已毕业"
                 else:
                     return f"[CQ:at,qq={ctx['user_id']}],管理员的决定权也是很重要的!"
-        if cmd == '删除出道记录':
+        elif cmd == '删除出道记录':
             if ctx['message_type'] == 'group':
                 if ctx['user_id'] in self.admin_list:
                     gid = match.group(2) if match.group(
@@ -165,7 +165,7 @@ class debut:
                         return f"已删除[CQ:at,qq={gid}]的出道记录"
                 else:
                     return f"[CQ:at,qq={ctx['user_id']}],管理员的决定权也是很重要的!"
-        if cmd == '添加出道管理员':
+        elif cmd == '添加出道管理员':
             if ctx['message_type'] == 'group':
                 if ctx['user_id'] in self.setting["super-admin"] or ctx['sender']['role'] == 'owner':
                     gid = match.group(2) if match.group(
@@ -178,7 +178,7 @@ class debut:
                         return f"已将[CQ:at,qq={gid}]添加为出道管理员"
                 else:
                     return f"[CQ:at,qq={ctx['user_id']}],怎么,想篡位?"
-        if cmd == '删除出道管理员':
+        elif cmd == '删除出道管理员':
             if ctx['message_type'] == 'group':
                 if ctx['user_id'] in self.setting["super-admin"] or ctx['sender']['role'] == 'owner':
                     gid = match.group(2) if match.group(
