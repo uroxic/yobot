@@ -53,8 +53,9 @@ class Custom:
         # 这是cqhttp的api，详见cqhttp文档
         self.api = bot_api
         self.debut = {}
-        self.debut1 = ['听说女装出道比较好呢~', '听说你想和望一起五万円一次?', '这是要转投ll还是cgss呢?']
+        self.debut1 = ['听说女装出道比较好呢~', '听说你想和望酱一起五万円一次?', '这是要转投ll还是cgss呢?']
         self.debut2 = ['多次出道?已为您买好机票', '会长的决定权也是很重要的!', '不考虑改个名吗?']
+        self.debut3 = ['']
 
         # # 注册定时任务，详见apscheduler文档
         # @scheduler.scheduled_job('cron', hour=8)
@@ -116,14 +117,14 @@ class Custom:
                     self.debut[ctx['group_id']][ctx['sender']['card']] = 1
                     msg = "同意" + f"[CQ:at,qq={ctx['user_id']}]" + \
                         '的出道申请\n'
-                    msg += self.debut1[randint(0, len(self.debut1))]
+                    msg += self.debut1[randint(0, len(self.debut1)-1)]
                     return msg
                 else:
                     self.debut[ctx['group_id']][ctx['sender']['card']] += 1
                     msg = "同意" + f"[CQ:at,qq={ctx['user_id']}]" + \
                         '的第' + str(self.debut[ctx['group_id']]
                                    [ctx['sender']['card']]) + '次出道申请\n'
-                    msg += self.debut2[randint(0, len(self.debut2))]
+                    msg += self.debut2[randint(0, len(self.debut2)-1)]
                     return msg
         if cmd == '查看出道记录':
             if ctx['message_type'] == 'group':
@@ -133,8 +134,10 @@ class Custom:
                     key = self.debut[ctx['group_id']].keys()
                     msg = ''
                     for i in key:
-                        msg += i + ': 出道 ' + \
-                            self.debut[ctx['group_id']][i] + '次\n'
+                        msg += str(i) + ': 出道 ' + \
+                            str(self.debut[ctx['group_id']][i]) + ' 次\n'
+                    msg += '总计 ' + \
+                        str(len(self.debut[ctx['group_id']])) + ' 人出道'
                     return msg
         if cmd == '清空出道记录':
             if ctx['message_type'] == 'group':
