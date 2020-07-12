@@ -20,6 +20,7 @@ from typing import Any, Dict, Union
 from aiocqhttp.api import Api
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from quart import Quart
+from random import randint
 
 
 class Custom:
@@ -47,9 +48,13 @@ class Custom:
 
         # 这是来自yobot_config.json的设置，如果需要增加设置项，请修改default_config.json文件
         self.setting = glo_setting
+        self.admin_list = self.setting["super-admin"]
 
         # 这是cqhttp的api，详见cqhttp文档
         self.api = bot_api
+        self.debut = {}
+        self.debut1 = ['听说女装出道比较好呢~', '听说你想和望一起五万円一次?', '这是要转投ll还是cgss呢?']
+        self.debut2 = ['多次出道?已为您买好机票', '会长的决定权也是很重要的!', '不考虑改个名吗?']
 
         # # 注册定时任务，详见apscheduler文档
         # @scheduler.scheduled_job('cron', hour=8)
@@ -103,6 +108,44 @@ class Custom:
 
                 # 返回字符串：发送消息并阻止后续插件
                 return '若链接失效请通知管理员'
+        if cmd == '申请出道':
+            if ctx['message_type'] == 'group':
+                if ctx['group_id'] not in self.debut:
+                    self.debut[ctx['group_id']] = {}
+                if ctx['sender']['card'] not in self.debut[ctx['group_id']]:
+                    self.debut[ctx['group_id']][ctx['sender']['card']] = 1
+                    msg = "同意" + f"[CQ:at,qq={ctx['user_id']}]" + \
+                        '的出道申请\n'
+                    msg += self.debut1[randint(0, len(self.debut1))]
+                    return msg
+                else:
+                    self.debut[ctx['group_id']][ctx['sender']['card']] += 1
+                    msg = "同意" + f"[CQ:at,qq={ctx['user_id']}]" + \
+                        '的第' + str(self.debut[ctx['group_id']]
+                                   [ctx['sender']['card']]) + '次出道申请\n'
+                    msg += self.debut2[randint(0, len(self.debut2))]
+                    return msg
+        if cmd == '查看出道记录':
+            if ctx['message_type'] == 'group':
+                if ctx['group_id'] not in self.debut:
+                    return '本群无人出道'
+                else:
+                    key = self.debut[ctx['group_id']].keys()
+                    msg = ''
+                    for i in key:
+                        msg += i + ': 出道 ' + \
+                            self.debut[ctx['group_id']][i] + '次\n'
+                    return msg
+        if cmd == '清空出道记录':
+            if ctx['message_type'] == 'group':
+                if ctx['user_id'] in self.admin_list or ctx['sender']['role'] == 'owner' or ctx['sender']['role'] == 'admin':
+                    if ctx['group_id'] not in self.debut:
+                        return '本群无人出道'
+                    else:
+                        del self.debut[ctx['group_id']]
+                        return '已清空出道记录'
+                else:
+                    return f"[CQ:at,qq={ctx['user_id']}],您无权清空出道记录"
 
         # 返回布尔值：是否阻止后续插件（返回None视作False）
         return False

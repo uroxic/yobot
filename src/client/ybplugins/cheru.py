@@ -132,7 +132,8 @@ class cheru:
                 s = cmd[4:]
                 if len(s) > 1501:
                     return '切、切噜太长切不动勒切噜噜...'
-                msg = ctx['sender']['card'] + ' 的切噜噜是：\n' + cheru2str(s)
+                msg = f"[CQ:at,qq={ctx['user_id']}]" + \
+                    ' 的切噜噜是：\n' + cheru2str(s)
                 return msg
             if ctx['message_type'] == 'private':
                 s = cmd[4:]
