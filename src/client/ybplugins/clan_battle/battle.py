@@ -1304,38 +1304,44 @@ class ClanBattle:
             )
             return '请在面板中查看：'+url
         elif match_num == 10:  # 预约
-            match = re.match(r'^预约([1-5]) *(?:[\:：](.*))?$', cmd)
+            match = re.match(
+                r'^预约([1-5]) *(?:[\:：](.*))?(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
             if not match:
                 return
             boss_num = int(match.group(1))
             extra_msg = match.group(2)
+            tid = int(match.group(3)) if match.group(
+                3) is not None else user_id
             if isinstance(extra_msg, str):
                 extra_msg = extra_msg.strip()
                 if not extra_msg:
                     extra_msg = None
             try:
-                self.add_subscribe(group_id, user_id, boss_num, extra_msg)
+                self.add_subscribe(group_id, tid, boss_num, extra_msg)
             except ClanBattleError as e:
-                _logger.info('群聊 失败 {} {} {}'.format(user_id, group_id, cmd))
+                _logger.info('群聊 失败 {} {} {}'.format(tid, group_id, cmd))
                 return str(e)
-            _logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
-            return '预约成功'
+            _logger.info('群聊 成功 {} {} {}'.format(tid, group_id, cmd))
+            return f'[CQ:at,qq={tid}]预约成功'
         elif match_num == 11:  # 挂树
-            match = re.match(r'^挂树 *(?:[\:：](.*))?$', cmd)
+            match = re.match(
+                r'^挂树 *(?:[\:：](.*))?(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
             if not match:
                 return
             extra_msg = match.group(1)
+            tid = int(match.group(2)) if match.group(
+                2) is not None else user_id
             if isinstance(extra_msg, str):
                 extra_msg = extra_msg.strip()
                 if not extra_msg:
                     extra_msg = None
             try:
-                self.add_subscribe(group_id, user_id, 0, extra_msg)
+                self.add_subscribe(group_id, tid, 0, extra_msg)
             except ClanBattleError as e:
-                _logger.info('群聊 失败 {} {} {}'.format(user_id, group_id, cmd))
+                _logger.info('群聊 失败 {} {} {}'.format(tid, group_id, cmd))
                 return str(e)
-            _logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
-            return '已挂树'
+            _logger.info('群聊 成功 {} {} {}'.format(tid, group_id, cmd))
+            return f'[CQ:at,qq={tid}]已挂树'
         elif match_num == 12:  # 申请/锁定
             if cmd == '申请出刀':
                 appli_type = 1
@@ -1363,22 +1369,25 @@ class ClanBattle:
             _logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
             return str(boss_status)
         elif match_num == 13:  # 取消
-            match = re.match(r'^取消(?:预约)?([1-5]|挂树)$', cmd)
+            match = re.match(
+                r'^取消(?:预约)?([1-5]|挂树) *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
             if not match:
                 return
             b = match.group(1)
+            tid = int(match.group(2)) if match.group(
+                2) is not None else user_id
             if b == '挂树':
                 boss_num = 0
                 event = b
             else:
                 boss_num = int(b)
                 event = f'预约{b}号boss'
-            counts = self.cancel_subscribe(group_id, user_id, boss_num)
+            counts = self.cancel_subscribe(group_id, tid, boss_num)
             if counts == 0:
-                return '您没有'+event
-                _logger.info('群聊 失败 {} {} {}'.format(user_id, group_id, cmd))
-            _logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
-            return '已取消'+event
+                return f'[CQ:at,qq={tid}]您没有'+event
+                _logger.info('群聊 失败 {} {} {}'.format(tid, group_id, cmd))
+            _logger.info('群聊 成功 {} {} {}'.format(tid, group_id, cmd))
+            return f'[CQ:at,qq={tid}]已取消'+event
         elif match_num == 14:  # 解锁
             if cmd != '解锁':
                 return
@@ -1401,21 +1410,27 @@ class ClanBattle:
             )
             return f'公会战面板：\n{url}\n建议添加到浏览器收藏夹或桌面快捷方式'
         elif match_num == 16:  # SL
-            if len(cmd) == 2:
-                try:
-                    self.save_slot(group_id, user_id)
-                except ClanBattleError as e:
-                    _logger.info('群聊 失败 {} {} {}'.format(
-                        user_id, group_id, cmd))
-                    return str(e)
-                _logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
-                return '已记录SL'
-            elif cmd[2:].strip() in ['?', '？']:
-                sl_ed = self.save_slot(group_id, user_id, only_check=True)
-                if sl_ed:
-                    return '今日已使用SL'
-                else:
-                    return '今日未使用SL'
+            match = re.match(
+                r'^(sl|SL|sl\?|SL\?|sl？|SL？) *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
+            if match:
+                cmd = match.group(1)
+                tid = int(match.group(2)) if match.group(
+                    2) is not None else user_id
+                if len(cmd) == 2:
+                    try:
+                        self.save_slot(group_id, tid)
+                    except ClanBattleError as e:
+                        _logger.info('群聊 失败 {} {} {}'.format(
+                            tid, group_id, cmd))
+                        return str(e)
+                    _logger.info('群聊 成功 {} {} {}'.format(tid, group_id, cmd))
+                    return f'[CQ:at,qq={tid}]已记录SL'
+                elif cmd[2:].strip() in ['?', '？']:
+                    sl_ed = self.save_slot(group_id, tid, only_check=True)
+                    if sl_ed:
+                        return f'[CQ:at,qq={tid}]今日已使用SL'
+                    else:
+                        return f'[CQ:at,qq={tid}]今日未使用SL'
         elif 20 <= match_num <= 25:
             if len(cmd) != 2:
                 return
