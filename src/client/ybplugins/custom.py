@@ -14,6 +14,8 @@ https://github.com/richardchien/nonebot
 然后在`yobot.py`中添加`import`（这一步可以交给仓库管理者做）
 '''
 
+import os
+import json
 import asyncio
 from typing import Any, Dict, Union
 
@@ -49,6 +51,10 @@ class Custom:
         # 这是来自yobot_config.json的设置，如果需要增加设置项，请修改default_config.json文件
         self.setting = glo_setting
         self.admin_list = self.setting["super-admin"]
+        self.novel_file = open(os.path.join(
+            self.setting["dirname"], "novel.json"), "rt", encoding="utf-8")
+        self.novel = json.load(self.novel_file)
+        self.novel_list = list(self.novel.keys())
 
         # 这是cqhttp的api，详见cqhttp文档
         self.api = bot_api
@@ -105,6 +111,15 @@ class Custom:
 
                 # 返回字符串：发送消息并阻止后续插件
                 return '若链接失效请通知管理员'
-
-        # 返回布尔值：是否阻止后续插件（返回None视作False）
+        if cmd == '来份轻小说' or cmd == '来点轻小说':
+            if ctx['message_type'] == 'private':
+                msg = ''
+            else:
+                msg = f"[CQ:at,qq={ctx['user_id']}]"
+            index = self.novel_list[randint(0, len(self.novel)-1)]
+            msg += str(index + ': \n' + self.novel[index])
+            msg += '\n此链接需要科学地打开，若链接失效请通知管理员'
+            msg += '\n若提示密钥无效，请复制链接至浏览器打开，或输入#号后的密钥'
+            return msg
+            # 返回布尔值：是否阻止后续插件（返回None视作False）
         return False
