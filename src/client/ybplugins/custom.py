@@ -71,15 +71,30 @@ class Custom:
         #     return 'yes, bot is running'
 
     def fuzzyfinder(self, user_input, collection):
-        suggestions = []
+        suggestions1 = []
         pattern = '.*?'.join(user_input)    # Converts 'djm' to 'd.*?j.*?m'
-        regex = re.compile(pattern)         # Compiles a regex.
+        regex1 = re.compile(pattern)         # Compiles a regex.
         for item in collection:
             # Checks if the current item matches the regex.
-            match = regex.search(item)
+            match = regex1.search(item)
             if match:
-                suggestions.append((len(match.group()), match.start(), item))
-        return [x for _, _, x in sorted(suggestions)]
+                suggestions1.append((len(match.group()), match.start(), item))
+        temp1 = [x for _, _, x in sorted(suggestions1)]
+        suggestions2 = []
+        pattern = '|'.join(user_input)    # Converts 'djm' to 'd.*?j.*?m'
+        regex2 = re.compile(pattern)         # Compiles a regex.
+        for item in collection:
+            # Checks if the current item matches the regex.
+            match = regex2.search(item)
+            if match and item not in temp1:
+                suggestions2.append(
+                    (len(regex2.findall(item)), match.start(), item))
+        temp2 += [x for _, _, x in sorted(suggestions2)]
+        if len(temp1):
+            temp = temp1 + temp2[:5]
+        else:
+            temp = temp2[:10]
+        return temp
 
     async def execute_async(self, ctx: Dict[str, Any]) -> Union[None, bool, str]:
         '''
