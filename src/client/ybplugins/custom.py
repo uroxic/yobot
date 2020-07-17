@@ -14,6 +14,7 @@ https://github.com/richardchien/nonebot
 然后在`yobot.py`中添加`import`（这一步可以交给仓库管理者做）
 '''
 
+import re
 import os
 import json
 import asyncio
@@ -111,15 +112,30 @@ class Custom:
 
                 # 返回字符串：发送消息并阻止后续插件
                 return '若链接失效请通知管理员'
-        if cmd == '来份轻小说' or cmd == '来点轻小说':
+        if cmd[:5] == '来份轻小说' or cmd == '来点轻小说':
+            match = re.match(r'^(来份轻小说|来点轻小说) *(?:[\:：](.*))?$', cmd)
+            if ctx['message_type'] == 'private':
+                msg = ''
+            else:
+                msg = f"[CQ:at,qq={ctx['user_id']}]\n"
+            if match.group(2) is None:
+                index = self.novel_list[randint(0, len(self.novel_list)-1)]
+            elif str(match.group(2)) in self.novel_list:
+                index = str(match.group(2))
+            else:
+                msg += '未在列表中找到此小说'
+                return msg
+            msg += str(index + ': \n' + self.novel[index])
+            msg += '\n此链接需要科学地打开，若链接失效请通知管理员'
+            msg += '\n若提示密钥无效，请检查链接是否有多余的后缀，或直接复制链接至浏览器打开'
+            return msg
+        if cmd == '轻小说目录':
             if ctx['message_type'] == 'private':
                 msg = ''
             else:
                 msg = f"[CQ:at,qq={ctx['user_id']}]"
-            index = self.novel_list[randint(0, len(self.novel)-1)]
-            msg += str(index + ': \n' + self.novel[index])
-            msg += '\n此链接需要科学地打开，若链接失效请通知管理员'
-            msg += '\n若提示密钥无效，请复制链接至浏览器打开，或输入#号后的密钥'
+            for i in self.novel_list:
+                msg += '\n' + str(i)
             return msg
             # 返回布尔值：是否阻止后续插件（返回None视作False）
         return False
