@@ -89,7 +89,7 @@ class Custom:
             if match and item not in temp1:
                 suggestions2.append(
                     (len(regex2.findall(item)), match.start(), item))
-        temp2 += [x for _, _, x in sorted(suggestions2)]
+        temp2 = [x for _, _, x in sorted(suggestions2)]
         if len(temp1):
             temp = temp1 + temp2[:5]
         else:
