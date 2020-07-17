@@ -70,6 +70,17 @@ class Custom:
         # async def check_bot():
         #     return 'yes, bot is running'
 
+    def fuzzyfinder(self, user_input, collection):
+        suggestions = []
+        pattern = '.*?'.join(user_input)    # Converts 'djm' to 'd.*?j.*?m'
+        regex = re.compile(pattern)         # Compiles a regex.
+        for item in collection:
+            # Checks if the current item matches the regex.
+            match = regex.search(item)
+            if match:
+                suggestions.append((len(match.group()), match.start(), item))
+        return [x for _, _, x in sorted(suggestions)]
+
     async def execute_async(self, ctx: Dict[str, Any]) -> Union[None, bool, str]:
         '''
         每次bot接收有效消息时触发
@@ -123,10 +134,18 @@ class Custom:
             elif str(match.group(2)) in self.novel_list:
                 index = str(match.group(2))
             else:
-                msg += '未在列表中找到此小说'
+                slist = self.fuzzyfinder(str(match.group(2)), self.novel_list)
+                if len(slist):
+                    msg += '您要找的可能是：\n\n'
+                    for index in slist:
+                        msg += str(index + ': \n' + self.novel[index] + '\n')
+                    msg += '\n链接需要科学地打开，若链接失效请通知管理员'
+                    msg += '\n若提示密钥无效，请检查链接是否有多余的后缀，或直接复制链接至浏览器打开'
+                else:
+                    msg += '未在列表中找到此小说'
                 return msg
-            msg += str(index + ': \n' + self.novel[index])
-            msg += '\n此链接需要科学地打开，若链接失效请通知管理员'
+            msg += str(index + ': \n' + self.novel[index] + '\n')
+            msg += '\n链接需要科学地打开，若链接失效请通知管理员'
             msg += '\n若提示密钥无效，请检查链接是否有多余的后缀，或直接复制链接至浏览器打开'
             return msg
         if cmd == '轻小说目录':
