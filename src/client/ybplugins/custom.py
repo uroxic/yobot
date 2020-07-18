@@ -56,6 +56,8 @@ class Custom:
             self.setting["dirname"], "novel.json"), "rt", encoding="utf-8")
         self.novel = json.load(self.novel_file)
         self.novel_list = list(self.novel.keys())
+        self.pot = {}
+        self.potmbr = {}
 
         # 这是cqhttp的api，详见cqhttp文档
         self.api = bot_api
@@ -170,6 +172,74 @@ class Custom:
                 msg = f"[CQ:at,qq={ctx['user_id']}]"
             for i in self.novel_list:
                 msg += '\n' + str(i)
+            return msg
+        if cmd[:2] == '约锅':
+            if ctx['message_type'] == 'group':
+                match = re.match(r"^(约锅) *(\S*)?$", cmd)
+                msg = f"[CQ:at,qq={ctx['user_id']}]\n"
+                if match.group(2) is None or str(match.group(2)) == '' or str(match.group(2)) == '?' or str(match.group(2)) == '？':
+                    if len(self.pot) == 0:
+                        msg += '当前无人约锅'
+                    else:
+                        loclist = list(self.pot.keys())
+                        for i in loclist:
+                            msg += '\n' + str(i) + ':\n'
+                            potlist = list(self.pot[i].keys())
+                            for j in potlist:
+                                msg += str(self.pot[i][j]) + '\n'
+                    msg += '\n请输入约锅+地点加入约锅'
+                else:
+                    if ctx['user_id'] not in self.potmbr:
+                        location = str(match.group(2))
+                        minfo = await self.api.get_group_member_info(
+                            group_id=ctx['group_id'], user_id=ctx['user_id'])
+                        self.potmbr[ctx['user_id']] = location
+                        if location in self.pot:
+                            self.pot[location][ctx['user_id']] = minfo.get(
+                                'card') or minfo['nickname']
+                        else:
+                            self.pot[location] = {}
+                            self.pot[location][ctx['user_id']] = minfo.get(
+                                'card') or minfo['nickname']
+                        msg += '成功加入' + str(location) + '的约锅'
+                    else:
+                        msg += '您已约过锅'
+            return msg
+        if cmd == '咕咕':
+            if ctx['message_type'] == 'group':
+                msg = f"[CQ:at,qq={ctx['user_id']}]\n"
+                if ctx['user_id'] not in self.potmbr:
+                    msg += '您当前未约锅'
+                else:
+                    msg += '成功咕咕' + str(self.potmbr[ctx['user_id']]) + '的约锅'
+                    del self.pot[self.potmbr[ctx['user_id']]][ctx['user_id']]
+                    potlist = list(
+                        self.pot[self.potmbr[ctx['user_id']]].keys())
+                    if len(potlist):
+                        msg += '\n请以下成员注意'
+                        for i in potlist:
+                            msg += f"\n[CQ:at,qq={i}]"
+                    else:
+                        del self.pot[self.potmbr[ctx['user_id']]]
+                    del self.potmbr[ctx['user_id']]
+            return msg
+        if cmd == '走起':
+            if ctx['message_type'] == 'group':
+                msg = f"[CQ:at,qq={ctx['user_id']}]\n"
+                if ctx['user_id'] not in self.potmbr:
+                    msg += '您当前未约锅'
+                else:
+                    msg += str(self.potmbr[ctx['user_id']]) + '的约锅已开始'
+                    del self.pot[self.potmbr[ctx['user_id']]][ctx['user_id']]
+                    potlist = list(
+                        self.pot[self.potmbr[ctx['user_id']]].keys())
+                    if len(potlist):
+                        msg += '\n请以下成员注意'
+                        for i in potlist:
+                            msg += f"\n[CQ:at,qq={i}]"
+                            del self.potmbr[i]
+                    del self.pot[self.potmbr[ctx['user_id']]]
+                    del self.potmbr[ctx['user_id']]
             return msg
             # 返回布尔值：是否阻止后续插件（返回None视作False）
         return False
