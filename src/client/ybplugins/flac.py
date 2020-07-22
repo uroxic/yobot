@@ -129,7 +129,7 @@ class Flac:
             msg_list = [
                 f"共 {res['result']['totalElements']} 条结果" if len(
                     music_list) > 0 else '没有任何结果',
-                *details,
+                *details
             ]
 
             msg += '\n'.join(msg_list)
