@@ -129,12 +129,12 @@ class Flac:
             msg_list = [
                 f"共 {res['result']['totalElements']} 条结果" if len(
                     music_list) > 0 else '没有任何结果',
-                *details
+                *details,
+                '\n数据来自 www.acgjc.com',
+                f'更多结果可见 www.acgjc.com/?s={quote(keyword)}'
             ]
 
-            msg += '\n'.join(msg_list)
-            msg += '\n\n数据来自 www.acgjc.com\n',
-            msg += f'更多结果可见 www.acgjc.com/?s={quote(keyword)}'
+            msg += str('\n'.join(msg_list))
             return msg
 
         # 返回布尔值：是否阻止后续插件（返回None视作False）
