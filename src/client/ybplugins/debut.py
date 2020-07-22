@@ -14,7 +14,7 @@ from quart import Quart
 from random import randint
 
 
-class debut:
+class Debut:
     def __init__(self,
                  glo_setting: Dict[str, Any],
                  scheduler: AsyncIOScheduler,

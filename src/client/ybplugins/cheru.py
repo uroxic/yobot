@@ -70,7 +70,7 @@ def cheru2str(c: str) -> str:
     # return ''.join(s)
 
 
-class cheru:
+class Cheru:
     def __init__(self,
                  glo_setting: Dict[str, Any],
                  scheduler: AsyncIOScheduler,

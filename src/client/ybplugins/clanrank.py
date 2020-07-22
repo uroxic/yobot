@@ -16,7 +16,7 @@ from quart import Quart
 from random import randint
 
 
-class clanrank:
+class Clanrank:
     def __init__(self,
                  glo_setting: Dict[str, Any],
                  scheduler: AsyncIOScheduler,

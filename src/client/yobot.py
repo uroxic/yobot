@@ -20,12 +20,12 @@ if __package__:
     from .ybplugins import (boss_dmg, calender, clan_battle, gacha, homepage,
                             jjc_consult, login, marionette, push_news, settings,
                             switcher, templating, updater, web_util, ybdata,
-                            yobot_msg, custom, miner, group_leave, gacha_new, cheru, debut, cooperate, clanrank)
+                            yobot_msg, custom, miner, group_leave, gacha_new, cheru, debut, cooperate, clanrank, flac)
 else:
     from ybplugins import (boss_dmg, calender, clan_battle, gacha, homepage,
                            jjc_consult, login, marionette, push_news, settings,
                            switcher, templating, updater, web_util, ybdata,
-                           yobot_msg, custom, miner, group_leave, gacha_new, cheru, debut, cooperate, clanrank)
+                           yobot_msg, custom, miner, group_leave, gacha_new, cheru, debut, cooperate, clanrank, flac)
 
 # 本项目构建的框架非常粗糙，不建议各位把时间浪费本项目上
 # 如果想开发自己的机器人，建议直接使用 nonebot 框架
@@ -228,11 +228,12 @@ class Yobot:
             miner.Miner(**kwargs),
             group_leave.GroupLeave(**kwargs),
             gacha_new.GachaNew(**kwargs),
-            cheru.cheru(**kwargs),
+            cheru.Cheru(**kwargs),
             custom.Custom(**kwargs),
-            debut.debut(**kwargs),
-            cooperate.cooperate(**kwargs),
-            clanrank.clanrank(**kwargs),
+            debut.Debut(**kwargs),
+            cooperate.Cooperate(**kwargs),
+            clanrank.Clanrank(**kwargs),
+            flac.Flac(**kwargs),
         ]
 
     def active_jobs(self) -> List[Tuple[Any, Callable[[], Iterable[Dict[str, Any]]]]]:
