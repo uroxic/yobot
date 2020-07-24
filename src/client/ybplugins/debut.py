@@ -91,7 +91,7 @@ class Debut:
             if ctx['message_type'] == 'group':
                 if ctx['group_id'] not in self.debut:
                     self.debut[ctx['group_id']] = {}
-                if ctx['sender']['card'] not in self.debut[ctx['group_id']]:
+                if ctx['user_id'] not in self.debut[ctx['group_id']]:
                     self.debut[ctx['group_id']][ctx['user_id']] = ['', 0, 0]
                     self.debut[ctx['group_id']][ctx['user_id']
                                                 ][0] = ctx['sender']['card']
