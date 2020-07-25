@@ -20,7 +20,7 @@ services:
       - COOLQ_ACCOUNT=${QQ_ACCOUNT} # 要登录的 QQ 账号，可选但建议填
       - COOLQ_URL=${COOLQ_VERSION_URL}
       - CQHTTP_USE_HTTP=false
-      - CQHTTP_USE_WS=false
+      - CQHTTP_USE_WS=true
       - CQHTTP_USE_WS_REVERSE=true
       - CQHTTP_WS_REVERSE_API_URL=ws://bot:9222/ws/api/
       - CQHTTP_WS_REVERSE_EVENT_URL=ws://bot:9222/ws/event/
@@ -38,6 +38,7 @@ services:
     volumes:
       - ./cqhttp:/home/user/coolq
     ports:
+      - "6700:6700" # WS端口
       - "9000:9000" # VNC端口
       # - "5700:5700" # HTTP API 插件开放的端口
     networks:
