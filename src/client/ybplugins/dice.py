@@ -1,14 +1,12 @@
 '''
-无损音乐搜索 数据来自acgjc.com
+[.r] 掷骰子
+[.r 3d12] 掷3次12面骰子
 '''
 
 import re
 import copy
-import time
 import json
 import asyncio
-import requests
-from urllib.parse import quote
 from typing import Any, Dict, Union
 
 from aiocqhttp.api import Api
@@ -17,7 +15,7 @@ from quart import Quart
 from random import randint
 
 
-class Flac:
+class Dice:
     def __init__(self,
                  glo_setting: Dict[str, Any],
                  scheduler: AsyncIOScheduler,
@@ -46,19 +44,6 @@ class Flac:
 
         # 这是cqhttp的api，详见cqhttp文档
         self.cqapi = bot_api
-        self.api = 'http://mtage.top:8099/acg-music/search'
-        self.header = {
-            'Content-Type': 'application/json',
-            'Connection': 'keep-alive',
-            'Accept': 'application/json, text/javascript, */*; q=0.01',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36',
-            'DNT': '1',
-            'Sec-Fetch-Site': 'cross-site',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'zh-CN,zh;q=0.9',
-        }
 
         # # 注册定时任务，详见apscheduler文档
         # @scheduler.scheduled_job('cron', hour=8)
@@ -69,6 +54,27 @@ class Flac:
         # @app.route('/is-bot-running', methods=['GET'])
         # async def check_bot():
         #     return 'yes, bot is running'
+
+    async def do_dice(self, sender_qqid, num, min_, max_, opr, offset, TIP="的掷骰结果是："):
+        if num == 0:
+            return '咦？我骰子呢？'
+        min_, max_ = min(min_, max_), max(min_, max_)
+        rolls = list(map(lambda _: random.randint(min_, max_), range(num)))
+        sum_ = sum(rolls)
+        rolls_str = '+'.join(map(lambda x: str(x), rolls))
+        if len(rolls_str) > 100:
+            rolls_str = str(sum_)
+        res = sum_ + opr * offset
+        msg = [
+            f"[CQ:at,qq={sender_qqid}]",
+            f'{TIP}\n', str(num) if num > 1 else '', 'D',
+            f'{min_}~' if min_ != 1 else '', str(max_),
+            (' +-'[opr] + str(offset)) if offset else '',
+            '=', rolls_str, (' +-'[opr] + str(offset)) if offset else '',
+            f'={res}' if offset or num > 1 else '',
+        ]
+        msg = ''.join(msg)
+        return msg
 
     async def execute_async(self, ctx: Dict[str, Any]) -> Union[None, bool, str]:
         '''
@@ -84,12 +90,12 @@ class Flac:
         msg = ctx['raw_message']
         sender_qqid = ctx["user_id"]
         regex = [
-            r"^(搜无损) *(?:[\:：](.*))?$",
+            r'^\.r\s*((?P<num>\d{0,2})d((?P<min>\d{1,4})~)?(?P<max>\d{0,4})((?P<opr>[+-])(?P<offset>\d{0,5}))?)?\b',
             #r"^(查询公会|查询会长) *(-?\d+)? *(?:[\:：](.*))?$",
             #r"^(查询排名|查询分数) *(-?\d+)? *(?:[\:：](\d+))?$",
             #r"^(查询本会|查询档线) *(-?\d+)?$",
             #r"^(历史数据) *$",
-            #r"^(预计伤害) *(-?\d+)([Ww万Kk千])? *(?:\[CQ:at,qq=(\d+)\])? *$"
+            #r"^(预计伤害) *(-?\d+)([Ww万Kk千])? *(?:\[CQ:at,qq=(\d+)\])? *$",
             #r"^(送钻) *(-?\d+)([Ww万Kk千])? *$"
         ]
         match = None
@@ -99,41 +105,19 @@ class Flac:
                 break
         if match is None:
             return
-        cmd = match.group(1)
-
-        if cmd == '搜无损':
-            if ctx['message_type'] == 'private':
-                msg = ''
-            else:
-                msg = f"[CQ:at,qq={ctx['user_id']}]\n"
-            keyword = str(match.group(2)) if match.group(
-                2) is not None else ''
-            resp = requests.get('http://mtage.top:8099/acg-music/search',
-                                params={'title-keyword': keyword}, headers=self.header)
-            res = resp.json()
-            if res['success'] is False:
-                msg += f'查询失败 请至acgjc官网查询 www.acgjc.com/?s={quote(keyword)}'
-                return msg
-
-            music_list = res['result']['content']
-            music_list = music_list[:min(5, len(music_list))]
-
-            details = [" ".join([
-                f"{ele['title']}",
-                f"{ele['downloadLink']}",
-                f"密码：{ele['downloadPass']}" if ele['downloadPass'] else ""
-            ]) for ele in music_list]
-
-            msg_list = [
-                f"共 {res['result']['totalElements']} 条结果" if len(
-                    music_list) > 0 else '没有任何结果',
-                *details,
-                '\n数据来自 www.acgjc.com',
-                f'更多结果可见 www.acgjc.com/?s={quote(keyword)}'
-            ]
-
-            msg += str('\n'.join(msg_list))
-            return msg
+        else:
+            num, min_, max_, opr, offset = 1, 1, 100, 1, 0
+            if match.group('num'):
+                num = int(match.group('num'))
+            if match.group('min'):
+                min_ = int(match.group('min'))
+            if match.group('max'):
+                max_ = int(match.group('max'))
+            if match.group('opr'):
+                opr = -1 if match.group('opr') == '-' else 1
+            if match.group('offset'):
+                offset = int(match.group('offset'))
+            return self.do_dice(sender_qqid, num, min_, max_, opr, offset)
 
         # 返回布尔值：是否阻止后续插件（返回None视作False）
         return False
