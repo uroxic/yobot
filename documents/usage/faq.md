@@ -1,12 +1,8 @@
 # 常见问题
 
-你可以按下`ctrl-F`然后搜索你的问题关键词。
+你可以按下`ctrl-F`在此页面搜索你的问题关键词。或用顶部搜索栏在整个文档中进行搜索。
 
 ## 酷Q 问题
-
-### 酷Q 社区无法注册账号
-
-现在酷Q只能在周末注册。
 
 ### 需要购买 酷Q Pro 吗
 
@@ -32,9 +28,9 @@ yobot 不需要。（其他插件可能需要）
 
 ## mirai 问题
 
-### mirai 如何使用
+### CQHTTP-mirai 无法下载
 
-mirai 尚未稳定，稳定后本站会发布教程和一键安装包。如果想体验测试版可以参考[这里](../install/mirai.md)
+由于 mirai-console 的插件下载服务器长期故障，请按新版教程手动下载 `CQHTTP-mirai`
 
 ## yobot 问题
 
@@ -83,9 +79,11 @@ Apache: `RemoteIPHeader X-Real-IP`
 请参考[Docker部署](../install/docker.md)  
 此类情况均是由root账户直接运行docker实例造成的。  
 在源码根目录中执行：  
+
 ```shell script
 chown -R 1000:1000 .
 ```
+
 以解决该问题。  
 
 ### 运行时提示“存在未提交的修改”
@@ -93,9 +91,8 @@ chown -R 1000:1000 .
 此类情况大部分来自于**直接修改Yobot源码**的行为。  
 按照教程复制更改的配置文件（.env,yobot_data）不属于源码。  
 具体有哪些文件不属于源码，请参照根目录下的 .gitignore 文件。  
-如果您主动修改了源码以执行部分额外功能，请参照[如何在本地提交Commit](https://github.com/yuudi/yobot/issues/136#issuecomment-635958636)以取消该提示。
+如果您主动修改了源码以执行部分额外功能，请参照[如何在本地提交Commit](https://github.com/pcrbot/yobot/issues/136#issuecomment-635958636)以取消该提示。
 
 ### 这里没有我的问题
 
-可以在QQ群（{{ [770947581,1044314369,1067699252,774394459][Math.floor(Math.random()*4)] }}）或[这里](https://github.com/yuudi/yobot/issues)提问，提问前**建议阅读**[正确的提问姿势](https://github.com/tangx/Stop-Ask-Questions-The-Stupid-Ways/blob/master/README.md)和[提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/master/README-zh_CN.md)
-
+可以在QQ群（{{ [770947581,1044314369,1067699252,774394459][Math.floor(Math.random()*4)] }}）或[github issue](https://github.com/pcrbot/yobot/issues)提问，提问前可以阅读[正确的提问姿势](https://github.com/tangx/Stop-Ask-Questions-The-Stupid-Ways/blob/master/README.md)

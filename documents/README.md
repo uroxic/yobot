@@ -1,6 +1,7 @@
 ---
 editLink: false
 ---
+
 # yobot 公主连接群聊机器人
 
 ## 介绍
@@ -28,27 +29,27 @@ yobot 提供了群聊、web 页面两套用户交互方式，具有操作便捷�
 - 预约 boss，当对应 boss 出现时提醒预约的人
 - 挂树，当前 boss 被击败时提醒挂树的人
 - 申请出刀，提醒之后申请出刀的人有人正在出刀，防止意外撞刀
-- SL记录，记录每天的SL使用情况，方便指挥
+- SL 记录，记录每天的 SL 使用情况，方便指挥
 
 新版助手提供了一个网页面板，面板上可以进行更多操作
 
-![主面板](https://vs.yixuedh.com/assets/img/yobot/poYvQO.jpg)
+![主面板](https://img.yobot.win/yobot/poYvQO.jpg)
 
-![数据面板](https://vs.yixuedh.com/assets/img/yobot/HOh17P.jpg)
+![数据面板](https://img.yobot.win/yobot/HOh17P.jpg)
 
 ### 新闻推送
 
 机器人主动发送游戏新闻与活动提醒
 
-![游戏活动提醒](https://vs.yixuedh.com/assets/img/yobot/5bd8d1f5ac68ffde.jpg)
+![游戏活动提醒](https://img.yobot.win/yobot/5bd8d1f5ac68ffde.jpg)
 
-![数据面板](https://vs.yixuedh.com/assets/img/yobot/HOh17P.jpg)
+![数据面板](https://img.yobot.win/yobot/HOh17P.jpg)
 
 ### 日程查询
 
 机器人主动发送游戏新闻与活动提醒
 
-![游戏活动提醒](https://vs.yixuedh.com/assets/img/yobot/J04GEB.jpg)
+![游戏活动提醒](https://img.yobot.win/yobot/J04GEB.jpg)
 
 ### 模拟抽卡
 
@@ -57,7 +58,7 @@ yobot 提供了群聊、web 页面两套用户交互方式，具有操作便捷�
 还可以自定义修改卡池
 （怕打扰可以关闭此功能）
 
-![模拟抽卡](https://vs.yixuedh.com/assets/img/yobot/u4OLHH.png)
+![模拟抽卡](https://img.yobot.win/yobot/u4OLHH.png)
 
 ### 更多功能
 
@@ -65,17 +66,17 @@ yobot 提供了群聊、web 页面两套用户交互方式，具有操作便捷�
 
 ## 源码
 
-<https://github.com/yuudi/yobot>
+<https://github.com/pcrbot/yobot>
 
 ## 贡献者
 
-[项目贡献者](./project/contributors.md)  
+[项目贡献者](./project/contributors.md)
 
 ## 开源协议
 
 本工具使用了[这些](./project/open-source.md)开源软件和工具
 
-使用时请遵循[GPL-3.0协议](https://www.gnu.org/licenses/gpl-3.0.html)，简单地说：
+使用时请遵循[GPL-3.0 协议](https://www.gnu.org/licenses/gpl-3.0.html)，简单地说：
 
 - 自己使用、不重新分发，没有限制
 - 对本工具免费或收费提供下载或其它服务，需要在明显地方**说明本工具可以免费获取**并注明出处

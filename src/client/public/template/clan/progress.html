@@ -137,11 +137,13 @@
         <el-table-column prop="sl" label="SL" width="70" sortable>
           <template slot-scope="scope">
             <template v-if="today==-1">-</template>
-            <template v-if="scope.row.sl==today">
-              <a>已使用</a>
-            </template>
             <template v-else>
-              <a>-</a>
+              <template v-if="scope.row.sl==today">
+                <a>已使用</a>
+              </template>
+              <template v-else>
+                <a>-</a>
+              </template>
             </template>
           </template>
         </el-table-column>
@@ -158,7 +160,7 @@
     </template>
   </div>
   <footer style="text-align: center">
-    powered by <a href="https://github.com/yuudi/yobot">yobot</a>
+    powered by <a href="https://github.com/pcrbot/yobot">yobot</a>
   </footer>
 </body>
 <script>var csrf_token = "{{ session['csrf_token'] }}";</script>
