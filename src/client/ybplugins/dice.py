@@ -6,13 +6,13 @@
 import re
 import copy
 import json
+import random
 import asyncio
 from typing import Any, Dict, Union
 
 from aiocqhttp.api import Api
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from quart import Quart
-from random import randint
 
 
 class Dice:
