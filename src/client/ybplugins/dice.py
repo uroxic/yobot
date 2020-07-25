@@ -55,27 +55,6 @@ class Dice:
         # async def check_bot():
         #     return 'yes, bot is running'
 
-    async def do_dice(self, sender_qqid, num, min_, max_, opr, offset, TIP="的掷骰结果是："):
-        if num == 0:
-            return '咦？我骰子呢？'
-        min_, max_ = min(min_, max_), max(min_, max_)
-        rolls = list(map(lambda _: random.randint(min_, max_), range(num)))
-        sum_ = sum(rolls)
-        rolls_str = '+'.join(map(lambda x: str(x), rolls))
-        if len(rolls_str) > 100:
-            rolls_str = str(sum_)
-        res = sum_ + opr * offset
-        msg = [
-            f"[CQ:at,qq={sender_qqid}]",
-            f'{TIP}\n', str(num) if num > 1 else '', 'D',
-            f'{min_}~' if min_ != 1 else '', str(max_),
-            (' +-'[opr] + str(offset)) if offset else '',
-            '=', rolls_str, (' +-'[opr] + str(offset)) if offset else '',
-            f'={res}' if offset or num > 1 else '',
-        ]
-        msg = ''.join(msg)
-        return msg
-
     async def execute_async(self, ctx: Dict[str, Any]) -> Union[None, bool, str]:
         '''
         每次bot接收有效消息时触发
@@ -117,7 +96,26 @@ class Dice:
                 opr = -1 if match.group('opr') == '-' else 1
             if match.group('offset'):
                 offset = int(match.group('offset'))
-            return self.do_dice(sender_qqid, num, min_, max_, opr, offset)
+            DTIP = "的掷骰结果是："
+            if num == 0:
+                return '咦？我骰子呢？'
+            min_, max_ = min(min_, max_), max(min_, max_)
+            rolls = list(map(lambda _: random.randint(min_, max_), range(num)))
+            sum_ = sum(rolls)
+            rolls_str = '+'.join(map(lambda x: str(x), rolls))
+            if len(rolls_str) > 100:
+                rolls_str = str(sum_)
+            res = sum_ + opr * offset
+            msg = [
+                f"[CQ:at,qq={sender_qqid}]",
+                f'{DTIP}\n', str(num) if num > 1 else '', 'D',
+                f'{min_}~' if min_ != 1 else '', str(max_),
+                (' +-'[opr] + str(offset)) if offset else '',
+                '=', rolls_str, (' +-'[opr] + str(offset)) if offset else '',
+                f'={res}' if offset or num > 1 else '',
+            ]
+            msg = ''.join(msg)
+            return msg
 
         # 返回布尔值：是否阻止后续插件（返回None视作False）
         return False
