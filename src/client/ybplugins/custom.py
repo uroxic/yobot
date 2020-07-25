@@ -177,7 +177,7 @@ class Custom:
             for i in self.novel_list:
                 msg += '\n' + str(i)
             return msg
-        if cmd[:5] == '来份琴谱' or cmd == '来点琴谱':
+        if cmd[:4] == '来份琴谱' or cmd == '来点琴谱':
             match = re.match(r'^(来份琴谱|来点琴谱) *(?:[\:：](.*))?$', cmd)
             if ctx['message_type'] == 'private':
                 msg = ''
