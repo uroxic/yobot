@@ -185,6 +185,7 @@ class Cooperate:
                 }.get(match.group(3), 1)
                 damage = int(match.group(2)) * unit
                 damage = int(damage/10000+0.5)
+                self.cooperate[ctx['group_id']][gid][1] = 1
                 self.cooperate[ctx['group_id']][gid][2] = str(damage) + 'w'
                 return f"[CQ:at,qq={gid}]预计伤害为{self.cooperate[ctx['group_id']][gid][2]}"
         elif cmd == '完成合刀':
@@ -197,6 +198,7 @@ class Cooperate:
                 if gid not in self.cooperate[ctx['group_id']]:
                     return '此成员未在合刀列表中'
                 if self.cooperate[ctx['group_id']][gid][3] == 0:
+                    self.cooperate[ctx['group_id']][gid][1] = 1
                     self.cooperate[ctx['group_id']][gid][3] = 1
                     msg = f"[CQ:at,qq={gid}]已完成合刀"
                     return msg
