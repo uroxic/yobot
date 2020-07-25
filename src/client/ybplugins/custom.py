@@ -56,6 +56,10 @@ class Custom:
             self.setting["dirname"], "novel.json"), "rt", encoding="utf-8")
         self.novel = json.load(self.novel_file)
         self.novel_list = list(self.novel.keys())
+        self.sheet_file = open(os.path.join(
+            self.setting["dirname"], "sheet.json"), "rt", encoding="utf-8")
+        self.sheet = json.load(self.sheet_file)
+        self.sheet_list = list(self.sheet.keys())
         self.pot = {}
         self.potmbr = {}
 
@@ -171,6 +175,39 @@ class Custom:
             else:
                 msg = f"[CQ:at,qq={ctx['user_id']}]"
             for i in self.novel_list:
+                msg += '\n' + str(i)
+            return msg
+        if cmd[:5] == '来份琴谱' or cmd == '来点琴谱':
+            match = re.match(r'^(来份琴谱|来点琴谱) *(?:[\:：](.*))?$', cmd)
+            if ctx['message_type'] == 'private':
+                msg = ''
+            else:
+                msg = f"[CQ:at,qq={ctx['user_id']}]\n"
+            if match.group(2) is None:
+                index = self.sheet_list[randint(0, len(self.sheet_list)-1)]
+            elif str(match.group(2)) in self.sheet_list:
+                index = str(match.group(2))
+            else:
+                slist = self.fuzzyfinder(str(match.group(2)), self.sheet_list)
+                if len(slist):
+                    msg += '您要找的可能是：\n\n'
+                    for index in slist:
+                        msg += str(index + ': \n' + self.sheet[index] + '\n')
+                    msg += '\n链接需要科学地打开，若链接失效请通知管理员'
+                    msg += '\n若提示密钥无效，请检查链接是否有多余的后缀，或直接复制链接至浏览器打开'
+                else:
+                    msg += '未在列表中找到此小说'
+                return msg
+            msg += str(index + ': \n' + self.sheet[index] + '\n')
+            msg += '\n链接需要科学地打开，若链接失效请通知管理员'
+            msg += '\n若提示密钥无效，请检查链接是否有多余的后缀，或直接复制链接至浏览器打开'
+            return msg
+        if cmd == '琴谱目录':
+            if ctx['message_type'] == 'private':
+                msg = ''
+            else:
+                msg = f"[CQ:at,qq={ctx['user_id']}]"
+            for i in self.sheet_list:
                 msg += '\n' + str(i)
             return msg
         if cmd[:2] == '约锅':
