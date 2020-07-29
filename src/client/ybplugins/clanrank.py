@@ -122,13 +122,13 @@ class Clanrank:
                 if ctx['group_id'] not in self.clan:
                     return '本群未设置会名'
                 else:
-                    cname = str(self.clan[ctx['group_id']])
-                    tindex = (int(match.group(2))-1) if match.group(
-                        2) is not None else 0
                     r = requests.get(
                         str(self.api + '/default'), headers=self.header)
                     rget = r.json()
                     self.time = copy.deepcopy(rget['history'])
+                    cname = str(self.clan[ctx['group_id']])
+                    tindex = (int(match.group(2))-1) if match.group(
+                        2) is not None else (len(self.time)-1)
                     if tindex >= len(self.time) or tindex < 0:
                         return '请输入合法的时间序号'
                     r = requests.post(str(self.api + '/name/0'), data=json.dumps(
@@ -150,12 +150,12 @@ class Clanrank:
                     return msg
         elif cmd == '查询档线':
             if ctx['message_type'] == 'group':
-                tindex = (int(match.group(2))-1) if match.group(
-                    2) is not None else 0
                 r = requests.get(
                     str(self.api + '/default'), headers=self.header)
                 rget = r.json()
                 self.time = copy.deepcopy(rget['history'])
+                tindex = (int(match.group(2))-1) if match.group(
+                    2) is not None else (len(self.time)-1)
                 if tindex >= len(self.time) or tindex < 0:
                     return '请输入合法的时间序号'
                 r = requests.post(str(self.api + '/line'), data=json.dumps(
@@ -189,13 +189,13 @@ class Clanrank:
                 msg += '\n使用 命令+时间序号 获取指定时间的数据'
                 return msg
         elif cmd == '查询公会':
-            cname = str(match.group(3))
-            tindex = (int(match.group(2))-1) if match.group(
-                2) is not None else 0
             r = requests.get(
                 str(self.api + '/default'), headers=self.header)
             rget = r.json()
             self.time = copy.deepcopy(rget['history'])
+            cname = str(match.group(3))
+            tindex = (int(match.group(2))-1) if match.group(
+                2) is not None else (len(self.time)-1)
             if tindex >= len(self.time) or tindex < 0:
                 return '请输入合法的时间序号'
             r = requests.post(str(self.api + '/name/0'), data=json.dumps(
@@ -216,13 +216,13 @@ class Clanrank:
                                      time.localtime(self.time[tindex])))
             return msg
         elif cmd == '查询会长':
-            lname = str(match.group(3))
-            tindex = (int(match.group(2))-1) if match.group(
-                2) is not None else 0
             r = requests.get(
                 str(self.api + '/default'), headers=self.header)
             rget = r.json()
             self.time = copy.deepcopy(rget['history'])
+            lname = str(match.group(3))
+            tindex = (int(match.group(2))-1) if match.group(
+                2) is not None else (len(self.time)-1)
             if tindex >= len(self.time) or tindex < 0:
                 return '请输入合法的时间序号'
             r = requests.post(str(self.api + '/leader/0'), data=json.dumps(
@@ -243,14 +243,14 @@ class Clanrank:
                                      time.localtime(self.time[tindex])))
             return msg
         elif cmd == '查询排名':
-            rname = int(match.group(3)) if match.group(
-                3) is not None else 0
-            tindex = (int(match.group(2))-1) if match.group(
-                2) is not None else 0
             r = requests.get(
                 str(self.api + '/default'), headers=self.header)
             rget = r.json()
             self.time = copy.deepcopy(rget['history'])
+            rname = int(match.group(3)) if match.group(
+                3) is not None else 0
+            tindex = (int(match.group(2))-1) if match.group(
+                2) is not None else (len(self.time)-1)
             if tindex >= len(self.time) or tindex < 0:
                 return '请输入合法的时间序号'
             r = requests.post(str(self.api + '/rank/' + str(rname)), data=json.dumps(
@@ -271,14 +271,14 @@ class Clanrank:
                                      time.localtime(self.time[tindex])))
             return msg
         elif cmd == '查询分数':
-            sname = int(match.group(3)) if match.group(
-                3) is not None else 0
-            tindex = (int(match.group(2))-1) if match.group(
-                2) is not None else 0
             r = requests.get(
                 str(self.api + '/default'), headers=self.header)
             rget = r.json()
             self.time = copy.deepcopy(rget['history'])
+            sname = int(match.group(3)) if match.group(
+                3) is not None else 0
+            tindex = (int(match.group(2))-1) if match.group(
+                2) is not None else (len(self.time)-1)
             if tindex >= len(self.time) or tindex < 0:
                 return '请输入合法的时间序号'
             r = requests.post(str(self.api + '/score/' + str(sname)), data=json.dumps(
