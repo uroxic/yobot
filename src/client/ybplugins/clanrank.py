@@ -146,7 +146,7 @@ class Clanrank:
                         msg += '\n\n'
                     msg += '数据获取时间：'
                     msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                             time.localtime(self.time[0])))
+                                             time.localtime(self.time[tindex])))
                     return msg
         elif cmd == '查询档线':
             if ctx['message_type'] == 'group':
@@ -172,7 +172,7 @@ class Clanrank:
                 msg += '\n'
                 msg += '数据获取时间：'
                 msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                         time.localtime(self.time[0])))
+                                         time.localtime(self.time[tindex])))
                 return msg
         elif cmd == '历史数据':
             if ctx['message_type'] == 'group':
@@ -213,7 +213,7 @@ class Clanrank:
                 msg += '\n\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                     time.localtime(self.time[0])))
+                                     time.localtime(self.time[tindex])))
             return msg
         elif cmd == '查询会长':
             lname = str(match.group(3))
@@ -240,7 +240,7 @@ class Clanrank:
                 msg += '\n\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                     time.localtime(self.time[0])))
+                                     time.localtime(self.time[tindex])))
             return msg
         elif cmd == '查询排名':
             rname = int(match.group(3)) if match.group(
@@ -268,7 +268,7 @@ class Clanrank:
                 msg += '\n\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                     time.localtime(self.time[0])))
+                                     time.localtime(self.time[tindex])))
             return msg
         elif cmd == '查询分数':
             sname = int(match.group(3)) if match.group(
@@ -296,7 +296,7 @@ class Clanrank:
                 msg += '\n\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                     time.localtime(self.time[0])))
+                                     time.localtime(self.time[tindex])))
             return msg
 
         # 返回布尔值：是否阻止后续插件（返回None视作False）
