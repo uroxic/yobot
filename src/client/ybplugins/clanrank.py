@@ -47,9 +47,10 @@ class Clanrank:
         self.cqapi = bot_api
         self.clan = {}
         self.time = []
-        self.api = 'https://service-kjcbcnmw-1254119946.gz.apigw.tencentcs.com'
+        self.api = 'http://service-kjcbcnmw-1254119946.gz.apigw.tencentcs.com'
         self.header = {
             'Host': 'service-kjcbcnmw-1254119946.gz.apigw.tencentcs.com',
+            'Custom-Source': 'Original_Fire',
             'Content-Type': 'application/json',
             'Connection': 'keep-alive',
             'Accept': 'application/json, text/javascript, */*; q=0.01',
