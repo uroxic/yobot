@@ -133,14 +133,14 @@ class Custom:
             if ctx['message_type'] == 'group':
                 # 调用api发送消息，详见cqhttp文档
                 await self.api.send_group_msg(
-                    group_id=ctx['group_id'], message='https://docs.qq.com/sheet/DY1VSblJDQ0Vqbnhr')
+                    group_id=ctx['group_id'], message='https://docs.qq.com/sheet/DZk5ZeGp4bHVZWU1k')
 
                 # 返回字符串：发送消息并阻止后续插件
                 return '若链接失效请通知管理员'
             if ctx['message_type'] == 'private':
                 # 调用api发送消息，详见cqhttp文档
                 await self.api.send_private_msg(
-                    user_id=ctx['user_id'], message='https://docs.qq.com/sheet/DY1VSblJDQ0Vqbnhr')
+                    user_id=ctx['user_id'], message='https://docs.qq.com/sheet/DZk5ZeGp4bHVZWU1k')
 
                 # 返回字符串：发送消息并阻止后续插件
                 return '若链接失效请通知管理员'

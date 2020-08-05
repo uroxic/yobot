@@ -24,7 +24,7 @@ CHERU_DIC = {c: i for i, c in enumerate(CHERU_SET)}
 ENCODING = 'gb18030'
 rex_split = re.compile(r'\b', re.U)
 rex_word = re.compile(r'^\w+$', re.U)
-rex_cheru_word: re.Pattern = re.compile(rf'切[{CHERU_SET}]+', re.U)
+rex_cheru_word = re.compile(rf'切[{CHERU_SET}]+', re.U)
 
 
 def grouper(iterable, n, fillvalue=None):
