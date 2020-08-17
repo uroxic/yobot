@@ -170,9 +170,12 @@ class Custom:
             msg += '\n若提示密钥无效，请检查链接是否有多余的后缀，或直接复制链接至浏览器打开'
             return msg
         if cmd == '轻小说目录':
-            msg = f"[CQ:at,qq={ctx['user_id']}]"
+            if ctx['message_type'] == 'private':
+                msg = ''
+            else:
+                msg = f"[CQ:at,qq={ctx['user_id']}]\n"
             for i in self.novel_list:
-                msg += '\n' + str(i)
+                msg += str(i) + '\n'
             return msg
         if cmd[:4] == '来份琴谱' or cmd == '来点琴谱':
             match = re.match(r'^(来份琴谱|来点琴谱) *(?:[\:：](.*))?$', cmd)
@@ -200,9 +203,12 @@ class Custom:
             msg += '\n若提示密钥无效，请检查链接是否有多余的后缀，或直接复制链接至浏览器打开'
             return msg
         if cmd == '琴谱目录':
-            msg = f"[CQ:at,qq={ctx['user_id']}]"
+            if ctx['message_type'] == 'private':
+                msg = ''
+            else:
+                msg = f"[CQ:at,qq={ctx['user_id']}]\n"
             for i in self.sheet_list:
-                msg += '\n' + str(i)
+                msg += str(i) + '\n'
             return msg
         if cmd[:2] == '约锅':
             if ctx['message_type'] == 'group':
