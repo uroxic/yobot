@@ -2,6 +2,7 @@
 
 ## 3.6.4
 
+- 优化用户列表
 - 修复几个不为人知的 bug
 
 ## 3.6.3
@@ -19,7 +20,7 @@
 
 ## 3.6.1
 
-- 竞技场查询支持pcrdfans
+- 竞技场查询支持 pcrdfans
 - 更多的统计图表（[#85](https://github.com/pcrbot/yobot/pull/85)）
 - 统计：多维度分析（[#82](https://github.com/pcrbot/yobot/pull/82)）
 

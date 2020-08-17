@@ -255,21 +255,32 @@ class ClanBattle:
         # refresh group list
         asyncio.ensure_future(self._update_group_list_async())
 
-    def bind_group(self, group_id: Groupid, qqid: QQid, nickname: str):
+    async def bind_group(self, group_id: Groupid, qqid: QQid, nickname: str):
         """
         set user's default group
 
         Args:
             group_id: group id
             qqid: qqid
+            nickname: displayed name
         """
         user = User.get_or_create(qqid=qqid)[0]
         user.clan_group_id = group_id
         user.nickname = nickname
         user.deleted = False
+        try:
+            groupmember = await self.api.get_group_member_info(
+                group_id=group_id, user_id=qqid)
+            role = 100 if groupmember['role'] == 'member' else 10
+        except Exception as e:
+            _logger.exception(e)
+            role = 100
         membership = Clan_member.get_or_create(
             group_id=group_id,
             qqid=qqid,
+            defaults={
+                'role': role,
+            }
         )[0]
         user.save()
 
@@ -323,10 +334,14 @@ class ClanBattle:
             f'生命值{group.boss_health:,}'
         )
         if group.challenging_member_qq_id is not None:
-            boss_summary += '\n{}正在挑战boss'.format(
+            action = '正在挑战' if group.boss_lock_type == 1 else '锁定了'
+            boss_summary += '\n{}{}boss'.format(
                 self._get_nickname_by_qqid(group.challenging_member_qq_id)
-                or group.challenging_member_qq_id
+                or group.challenging_member_qq_id,
+                action,
             )
+            if group.boss_lock_type != 1:
+                boss_summary += '\n留言：'+group.challenging_comment
         return boss_summary
 
     def challenge(self,
@@ -1188,7 +1203,8 @@ class ClanBattle:
                 else:
                     nickname = (ctx['sender'].get('card')
                                 or ctx['sender'].get('nickname'))
-                self.bind_group(group_id, user_id, nickname)
+                asyncio.ensure_future(
+                    self.bind_group(group_id, user_id, nickname))
                 _logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
                 return '{}已加入本公会'.format(atqq(user_id))
         elif match_num == 3:  # 状态

@@ -90,9 +90,9 @@ class Consult:
                     self.__init__(self.setting, refresh_nickfile=True)
                     return self.user_input(cmd, True)
             def_set.add(item)
-            def_lst = list(def_set)
-        if len(def_lst) < 3:
-            raise ValueError("防守人数过少")
+        def_lst = list(def_set)
+        if len(def_lst) < 5:
+            raise ValueError("需要完整的5人防守队伍")
         return def_lst
 
     async def jjcsearch_async(self, def_lst, region):
@@ -120,8 +120,7 @@ class Consult:
         )
 
         self.output_num += 1
-        filename = 'solution-{}-{}.html'.format(
-            self.output_num, random.randint(0, 999))
+        filename = 'solution-{}-{}.html'.format(self.output_num, random.randint(0, 999))
         with open(os.path.join(self.output_foler, filename), 'w', encoding='utf-8') as f:
             f.write(page)
         addr = urljoin(

@@ -1,11 +1,22 @@
+import asyncio
 import json
 import os
 from urllib.parse import urljoin
 
+from playhouse.shortcuts import model_to_dict
 from quart import Quart, jsonify, redirect, request, session, url_for
 
 from .templating import render_template
-from .ybdata import User, Clan_group
+from .ybdata import Clan_group, User
+
+_returned_query_fileds = [
+    User.qqid,
+    User.nickname,
+    User.clan_group_id,
+    User.authority_group,
+    User.last_login_time,
+    User.last_login_ipaddr,
+]
 
 
 class Setting:
@@ -18,6 +29,39 @@ class Setting:
                  bot_api,
                  *args, **kwargs):
         self.setting = glo_setting
+
+    def _get_users_json(self, req_querys: dict):
+        querys = []
+        if req_querys.get('qqid'):
+            querys.append(
+                User.qqid == req_querys['qqid']
+            )
+        if req_querys.get('clan_group_id'):
+            querys.append(
+                User.clan_group_id == req_querys['clan_group_id']
+            )
+        if req_querys.get('authority_group'):
+            querys.append(
+                User.authority_group == req_querys['authority_group']
+            )
+        users = User.select(
+            User.qqid,
+            User.nickname,
+            User.clan_group_id,
+            User.authority_group,
+            User.last_login_time,
+            User.last_login_ipaddr,
+        ).where(
+            User.deleted == False,
+            *querys,
+        ).paginate(
+            page=req_querys['page'],
+            paginate_by=req_querys['page_size']
+        )
+        return json.dumps({
+            'code': 0,
+            'data': [model_to_dict(u, only=_returned_query_fileds) for u in users],
+        })
 
     def register_routes(self, app: Quart):
 
@@ -208,19 +252,12 @@ class Setting:
                     )
                 action = req['action']
                 if action == 'get_data':
-                    users = []
-                    for user in User.select().where(
-                        User.deleted == False,
-                    ):
-                        users.append({
-                            'qqid': user.qqid,
-                            'nickname': user.nickname,
-                            'clan_group_id': user.clan_group_id,
-                            'authority_group': user.authority_group,
-                            'last_login_time': user.last_login_time,
-                            'last_login_ipaddr': user.last_login_ipaddr,
-                        })
-                    return jsonify(code=0, data=users)
+                    return await asyncio.get_event_loop().run_in_executor(
+                        None,
+                        self._get_users_json,
+                        req['querys'],
+                    )
+
                 elif action == 'modify_user':
                     data = req['data']
                     m_user: User = User.get_or_none(qqid=data['qqid'])
@@ -228,7 +265,7 @@ class Setting:
                             (data.get('authority_group', 999)) <= user.authority_group):
                         return jsonify(code=12, message='Exceed authorization is not allowed')
                     if data.get('authority_group') == 1:
-                        self.setting['super-admin'].append(ctx['user_id'])
+                        self.setting['super-admin'].append(data['qqid'])
                         save_setting = self.setting.copy()
                         del save_setting['dirname']
                         del save_setting['verinfo']
