@@ -130,8 +130,9 @@ class Clanrank:
                     self.time = copy.deepcopy(rget['historyV2'])
                     self.time_list = list(self.time.keys())
                     cname = str(self.clan[ctx['group_id']])
-                    if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
-                        return '请输入合法的时间序号'
+                    if match.group(2) is not None:
+                        if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
+                            return '请输入合法的时间序号'
                     rtime = int(rget['ts']) if match.group(
                         2) is None else int(self.time_list[int(match.group(2))-1])
                     r = requests.post(str(self.api + '/name/0'), data=json.dumps(
@@ -160,8 +161,9 @@ class Clanrank:
             rget = r.json()
             self.time = copy.deepcopy(rget['historyV2'])
             self.time_list = list(self.time.keys())
-            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
-                return '请输入合法的时间序号'
+            if match.group(2) is not None:
+                if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
+                    return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
                 2) is None else self.time_list[int(match.group(2))-1]
             r = requests.post(str(self.api + '/line'), data=json.dumps(
@@ -205,8 +207,9 @@ class Clanrank:
             self.time = copy.deepcopy(rget['historyV2'])
             self.time_list = list(self.time.keys())
             cname = str(match.group(3))
-            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
-                return '请输入合法的时间序号'
+            if match.group(2) is not None:
+                if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
+                    return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
                 2) is None else self.time_list[int(match.group(2))-1]
             r = requests.post(str(self.api + '/name/0'), data=json.dumps(
@@ -235,8 +238,9 @@ class Clanrank:
             self.time = copy.deepcopy(rget['historyV2'])
             self.time_list = list(self.time.keys())
             lname = str(match.group(3))
-            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
-                return '请输入合法的时间序号'
+            if match.group(2) is not None:
+                if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
+                    return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
                 2) is None else self.time_list[int(match.group(2))-1]
             r = requests.post(str(self.api + '/leader/0'), data=json.dumps(
@@ -266,8 +270,9 @@ class Clanrank:
             self.time_list = list(self.time.keys())
             rname = int(match.group(3)) if match.group(
                 3) is not None else 0
-            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
-                return '请输入合法的时间序号'
+            if match.group(2) is not None:
+                if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
+                    return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
                 2) is None else self.time_list[int(match.group(2))-1]
             r = requests.post(str(self.api + '/rank/' + str(rname)), data=json.dumps(
@@ -297,8 +302,9 @@ class Clanrank:
             self.time_list = list(self.time.keys())
             sname = int(match.group(3)) if match.group(
                 3) is not None else 0
-            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
-                return '请输入合法的时间序号'
+            if match.group(2) is not None:
+                if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
+                    return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
                 2) is None else self.time_list[int(match.group(2))-1]
             r = requests.post(str(self.api + '/score/' + str(sname)), data=json.dumps(
