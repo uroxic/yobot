@@ -130,12 +130,12 @@ class Clanrank:
                     self.time = copy.deepcopy(rget['historyV2'])
                     self.time_list = list(self.time.keys())
                     cname = str(self.clan[ctx['group_id']])
-                    tindex = (int(match.group(2))-1) if match.group(
-                        2) is not None else (len(self.time_list)-1)
-                    if tindex >= len(self.time_list) or tindex < 0:
+                    if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                         return '请输入合法的时间序号'
+                    rtime = int(rget['ts']) if match.group(
+                        2) is None else int(self.time_list[int(match.group(2))-1])
                     r = requests.post(str(self.api + '/name/0'), data=json.dumps(
-                        {"history": int(self.time_list[tindex]), "clanName": str(cname)}), headers=self.header)
+                        {"history": int(rtime), "clanName": str(cname)}), headers=self.header)
                     rget = r.json()
                     msg = ''
                     for i in rget['data']:
@@ -147,58 +147,57 @@ class Clanrank:
                         msg += '\n会长 '
                         msg += str(i['leader_name'])
                         msg += '\n\n'
-                    msg += self.time[self.time_list[tindex]]
+                    msg += self.time[rtime] if str(
+                        rtime) in self.time else '最新数据'
                     msg += '\n'
                     msg += '数据获取时间：'
                     msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                             time.localtime(int(self.time_list[tindex]))))
+                                             time.localtime(int(rtime))))
                     return msg
         elif cmd == '查询档线':
-            if ctx['message_type'] == 'group':
-                r = requests.get(
-                    str(self.api + '/default'), headers=self.header)
-                rget = r.json()
-                self.time = copy.deepcopy(rget['historyV2'])
-                self.time_list = list(self.time.keys())
-                tindex = (int(match.group(2))-1) if match.group(
-                    2) is not None else (len(self.time_list)-1)
-                if tindex >= len(self.time_list) or tindex < 0:
-                    return '请输入合法的时间序号'
-                r = requests.post(str(self.api + '/line'), data=json.dumps(
-                    {"history": int(self.time_list[tindex])}), headers=self.header)
-                rget = r.json()
-                msg = ''
-                for i in rget['data']:
-                    msg += str(i['clan_name'])
-                    msg += ': \n'
-                    msg += str(i['damage']).ljust(10, ' ')
-                    msg += ' 排名'
-                    msg += str(i['rank'])
-                    msg += '\n'
+            r = requests.get(
+                str(self.api + '/default'), headers=self.header)
+            rget = r.json()
+            self.time = copy.deepcopy(rget['historyV2'])
+            self.time_list = list(self.time.keys())
+            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
+                return '请输入合法的时间序号'
+            rtime = int(rget['ts']) if match.group(
+                2) is None else self.time_list[int(match.group(2))-1]
+            r = requests.post(str(self.api + '/line'), data=json.dumps(
+                {"history": int(rtime)}), headers=self.header)
+            rget = r.json()
+            msg = ''
+            for i in rget['data']:
+                msg += str(i['clan_name'])
+                msg += ': \n'
+                msg += str(i['damage']).ljust(10, ' ')
+                msg += ' 排名'
+                msg += str(i['rank'])
                 msg += '\n'
-                msg += self.time[self.time_list[tindex]]
-                msg += '\n'
-                msg += '数据获取时间：'
-                msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                         time.localtime(int(self.time_list[tindex]))))
-                return msg
+            msg += '\n'
+            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
+            msg += '\n'
+            msg += '数据获取时间：'
+            msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
+                                     time.localtime(int(rtime))))
+            return msg
         elif cmd == '历史数据':
-            if ctx['message_type'] == 'group':
-                r = requests.get(
-                    str(self.api + '/default'), headers=self.header)
-                rget = r.json()
-                self.time = copy.deepcopy(rget['historyV2'])
-                self.time_list = list(self.time.keys())
-                msg = ''
-                for i in range(len(self.time_list)):
-                    msg += str(i+1) + ' : \n'
-                    msg += self.time[self.time_list[i]]
-                    msg += '\n'
-                    msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                             time.localtime(int(self.time_list[i]))))
-                    msg += '\n'
-                msg += '\n使用 命令+时间序号 获取指定时间的数据'
-                return msg
+            r = requests.get(
+                str(self.api + '/default'), headers=self.header)
+            rget = r.json()
+            self.time = copy.deepcopy(rget['historyV2'])
+            self.time_list = list(self.time.keys())
+            msg = ''
+            for i in range(len(self.time_list)):
+                msg += str(i+1) + ' : \n'
+                msg += self.time[self.time_list[i]]
+                msg += '\n'
+                msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
+                                         time.localtime(int(self.time_list[i]))))
+                msg += '\n'
+            msg += '\n使用 命令+时间序号 获取指定时间的数据'
+            return msg
         elif cmd == '查询公会':
             r = requests.get(
                 str(self.api + '/default'), headers=self.header)
@@ -206,12 +205,12 @@ class Clanrank:
             self.time = copy.deepcopy(rget['historyV2'])
             self.time_list = list(self.time.keys())
             cname = str(match.group(3))
-            tindex = (int(match.group(2))-1) if match.group(
-                2) is not None else (len(self.time_list)-1)
-            if tindex >= len(self.time_list) or tindex < 0:
+            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                 return '请输入合法的时间序号'
+            rtime = int(rget['ts']) if match.group(
+                2) is None else self.time_list[int(match.group(2))-1]
             r = requests.post(str(self.api + '/name/0'), data=json.dumps(
-                {"history": int(self.time_list[tindex]), "clanName": str(cname)}), headers=self.header)
+                {"history": int(rtime), "clanName": str(cname)}), headers=self.header)
             rget = r.json()
             msg = ''
             for i in rget['data']:
@@ -223,11 +222,11 @@ class Clanrank:
                 msg += '\n会长 '
                 msg += str(i['leader_name'])
                 msg += '\n\n'
-            msg += self.time[self.time_list[tindex]]
+            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
             msg += '\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                     time.localtime(int(self.time_list[tindex]))))
+                                     time.localtime(int(rtime))))
             return msg
         elif cmd == '查询会长':
             r = requests.get(
@@ -236,12 +235,12 @@ class Clanrank:
             self.time = copy.deepcopy(rget['historyV2'])
             self.time_list = list(self.time.keys())
             lname = str(match.group(3))
-            tindex = (int(match.group(2))-1) if match.group(
-                2) is not None else (len(self.time_list)-1)
-            if tindex >= len(self.time_list) or tindex < 0:
+            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                 return '请输入合法的时间序号'
+            rtime = int(rget['ts']) if match.group(
+                2) is None else self.time_list[int(match.group(2))-1]
             r = requests.post(str(self.api + '/leader/0'), data=json.dumps(
-                {"history": int(self.time_list[tindex]), "leaderName": str(lname)}), headers=self.header)
+                {"history": int(rtime), "leaderName": str(lname)}), headers=self.header)
             rget = r.json()
             msg = ''
             for i in rget['data']:
@@ -253,11 +252,11 @@ class Clanrank:
                 msg += '\n会长 '
                 msg += str(i['leader_name'])
                 msg += '\n\n'
-            msg += self.time[self.time_list[tindex]]
+            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
             msg += '\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                     time.localtime(int(self.time_list[tindex]))))
+                                     time.localtime(int(rtime))))
             return msg
         elif cmd == '查询排名':
             r = requests.get(
@@ -267,12 +266,12 @@ class Clanrank:
             self.time_list = list(self.time.keys())
             rname = int(match.group(3)) if match.group(
                 3) is not None else 0
-            tindex = (int(match.group(2))-1) if match.group(
-                2) is not None else (len(self.time_list)-1)
-            if tindex >= len(self.time_list) or tindex < 0:
+            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                 return '请输入合法的时间序号'
+            rtime = int(rget['ts']) if match.group(
+                2) is None else self.time_list[int(match.group(2))-1]
             r = requests.post(str(self.api + '/rank/' + str(rname)), data=json.dumps(
-                {"history": int(self.time_list[tindex])}), headers=self.header)
+                {"history": int(rtime)}), headers=self.header)
             rget = r.json()
             msg = ''
             for i in rget['data']:
@@ -284,11 +283,11 @@ class Clanrank:
                 msg += '\n会长 '
                 msg += str(i['leader_name'])
                 msg += '\n\n'
-            msg += self.time[self.time_list[tindex]]
+            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
             msg += '\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                     time.localtime(int(self.time_list[tindex]))))
+                                     time.localtime(int(rtime))))
             return msg
         elif cmd == '查询分数':
             r = requests.get(
@@ -298,12 +297,12 @@ class Clanrank:
             self.time_list = list(self.time.keys())
             sname = int(match.group(3)) if match.group(
                 3) is not None else 0
-            tindex = (int(match.group(2))-1) if match.group(
-                2) is not None else (len(self.time_list)-1)
-            if tindex >= len(self.time_list) or tindex < 0:
+            if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                 return '请输入合法的时间序号'
+            rtime = int(rget['ts']) if match.group(
+                2) is None else self.time_list[int(match.group(2))-1]
             r = requests.post(str(self.api + '/score/' + str(sname)), data=json.dumps(
-                {"history": int(self.time_list[tindex])}), headers=self.header)
+                {"history": int(rtime)}), headers=self.header)
             rget = r.json()
             msg = ''
             for i in rget['data']:
@@ -315,11 +314,11 @@ class Clanrank:
                 msg += '\n会长 '
                 msg += str(i['leader_name'])
                 msg += '\n\n'
-            msg += self.time[self.time_list[tindex]]
+            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
             msg += '\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
-                                     time.localtime(int(self.time_list[tindex]))))
+                                     time.localtime(int(rtime))))
             return msg
 
         # 返回布尔值：是否阻止后续插件（返回None视作False）
