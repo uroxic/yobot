@@ -148,7 +148,7 @@ class Clanrank:
                         msg += '\n会长 '
                         msg += str(i['leader_name'])
                         msg += '\n\n'
-                    msg += self.time[rtime] if str(
+                    msg += self.time[str(rtime)] if str(
                         rtime) in self.time else '最新数据'
                     msg += '\n'
                     msg += '数据获取时间：'
@@ -165,7 +165,7 @@ class Clanrank:
                 if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                     return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
-                2) is None else self.time_list[int(match.group(2))-1]
+                2) is None else int(self.time_list[int(match.group(2))-1])
             r = requests.post(str(self.api + '/line'), data=json.dumps(
                 {"history": int(rtime)}), headers=self.header)
             rget = r.json()
@@ -178,7 +178,7 @@ class Clanrank:
                 msg += str(i['rank'])
                 msg += '\n'
             msg += '\n'
-            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
+            msg += self.time[str(rtime)] if str(rtime) in self.time else '最新数据'
             msg += '\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
@@ -211,7 +211,7 @@ class Clanrank:
                 if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                     return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
-                2) is None else self.time_list[int(match.group(2))-1]
+                2) is None else int(self.time_list[int(match.group(2))-1])
             r = requests.post(str(self.api + '/name/0'), data=json.dumps(
                 {"history": int(rtime), "clanName": str(cname)}), headers=self.header)
             rget = r.json()
@@ -225,7 +225,7 @@ class Clanrank:
                 msg += '\n会长 '
                 msg += str(i['leader_name'])
                 msg += '\n\n'
-            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
+            msg += self.time[str(rtime)] if str(rtime) in self.time else '最新数据'
             msg += '\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
@@ -242,7 +242,7 @@ class Clanrank:
                 if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                     return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
-                2) is None else self.time_list[int(match.group(2))-1]
+                2) is None else int(self.time_list[int(match.group(2))-1])
             r = requests.post(str(self.api + '/leader/0'), data=json.dumps(
                 {"history": int(rtime), "leaderName": str(lname)}), headers=self.header)
             rget = r.json()
@@ -256,7 +256,7 @@ class Clanrank:
                 msg += '\n会长 '
                 msg += str(i['leader_name'])
                 msg += '\n\n'
-            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
+            msg += self.time[str(rtime)] if str(rtime) in self.time else '最新数据'
             msg += '\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
@@ -274,7 +274,7 @@ class Clanrank:
                 if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                     return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
-                2) is None else self.time_list[int(match.group(2))-1]
+                2) is None else int(self.time_list[int(match.group(2))-1])
             r = requests.post(str(self.api + '/rank/' + str(rname)), data=json.dumps(
                 {"history": int(rtime)}), headers=self.header)
             rget = r.json()
@@ -288,7 +288,7 @@ class Clanrank:
                 msg += '\n会长 '
                 msg += str(i['leader_name'])
                 msg += '\n\n'
-            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
+            msg += self.time[str(rtime)] if str(rtime) in self.time else '最新数据'
             msg += '\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
@@ -306,7 +306,7 @@ class Clanrank:
                 if (int(match.group(2))-1) >= len(self.time_list) or (int(match.group(2))-1) < 0:
                     return '请输入合法的时间序号'
             rtime = int(rget['ts']) if match.group(
-                2) is None else self.time_list[int(match.group(2))-1]
+                2) is None else int(self.time_list[int(match.group(2))-1])
             r = requests.post(str(self.api + '/score/' + str(sname)), data=json.dumps(
                 {"history": int(rtime)}), headers=self.header)
             rget = r.json()
@@ -320,7 +320,7 @@ class Clanrank:
                 msg += '\n会长 '
                 msg += str(i['leader_name'])
                 msg += '\n\n'
-            msg += self.time[rtime] if str(rtime) in self.time else '最新数据'
+            msg += self.time[str(rtime)] if str(rtime) in self.time else '最新数据'
             msg += '\n'
             msg += '数据获取时间：'
             msg += str(time.strftime("%Y-%m-%d %H:%M:%S",
