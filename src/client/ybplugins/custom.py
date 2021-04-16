@@ -15,6 +15,7 @@ https://github.com/richardchien/nonebot
 '''
 
 import re
+import math
 import os
 import json
 import asyncio
@@ -25,6 +26,21 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from quart import Quart
 from random import randint
 
+def RecogValueUnit(s):
+    if s=='':
+        return -1
+    match=re.match(r"^([\d.]*)(k|w|kw)*$",s)
+    if not match:
+        return -1
+    value=float(match.group(1))
+    unit=match.group(2)
+    if unit=='k':
+        value*=1000
+    elif unit=='w':
+        value*=10000
+    elif unit=='kw':
+        value*=10000000
+    return int(value)
 
 class Custom:
     def __init__(self,
@@ -279,4 +295,22 @@ class Custom:
                     del self.potmbr[ctx['user_id']]
             return msg
             # 返回布尔值：是否阻止后续插件（返回None视作False）
+        if cmd[:2] == '收尾':
+            match = re.match(r"^收尾 *(\S*) *(\S*)?$", cmd)
+            msg = f"[CQ:at,qq={ctx['user_id']}]\n"
+            if match:
+                remain_hp=RecogValueUnit(match.group(1))
+                if remain_hp==-1:
+                    msg+= '剩余血量输入有误'
+                else:
+                    damage=RecogValueUnit(match.group(2))
+                    if damage==-1:
+                        damage_required=math.ceil(remain_hp*90/11)
+                        msg+='满补收尾刀伤需要{:,}以上'.format(damage_required)
+                    else:
+                        return_time=math.ceil(90*(1-remain_hp/damage)+10)
+                        msg+=f'尾刀返还补偿时间{return_time}s'
+            else:
+                msg+= '无法理解您的收尾计算请求'
+            return msg
         return False

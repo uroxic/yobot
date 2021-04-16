@@ -18,12 +18,11 @@ from random import randint
 
 
 bossData = {
-    'scoreRate': [
-        [1, 1, 1.1, 1.1, 1.2],
-        [1.2, 1.2, 1.5, 1.7, 2],
-    ],
-    'hp': [6000000, 8000000, 10000000, 12000000, 20000000],
-    'max': 2,
+    'scoreRate': [[1, 1, 1.3, 1.3, 1.5] for _ in range(3)]+
+    [[1.4, 1.4, 1.8, 1.8, 2] for _ in range(7)]+
+    [[2,2,2.5,2.5,3]],
+    'hp': [[6000000, 8000000, 10000000, 12000000, 20000000] for _ in range(11)],
+    'max': 11,
 }
 
 
@@ -38,23 +37,23 @@ def calc_hp(hp_base: int):
 
     while True:
         nowZm = bossData['max'] - 1 if zm > bossData['max'] else zm - 1
-        cc += bossData['scoreRate'][nowZm][king - 1] * bossData['hp'][king - 1]
+        cc += bossData['scoreRate'][nowZm][king - 1] * bossData['hp'][nowZm][king - 1]
         if cc > hp_base:
             cc -= bossData['scoreRate'][nowZm][king - 1] * \
-                bossData['hp'][king - 1]
+                bossData['hp'][nowZm][king - 1]
             remain = (hp_base - cc) / bossData['scoreRate'][nowZm][king - 1]
             damage += remain
-            remainPer = 1.0 - remain / bossData['hp'][king - 1]
-            remainHp = bossData['hp'][king - 1] - remain
+            remainPer = 1.0 - remain / bossData['hp'][nowZm][king - 1]
+            remainHp = bossData['hp'][nowZm][king - 1] - remain
             break
-        damage += bossData['hp'][king - 1]
+        damage += bossData['hp'][nowZm][king - 1]
         if king == 5:
             zm += 1
             king = 1
             continue
         king += 1
     remainPer *= 100
-    bdk = bossData['hp'][king - 1]
+    bdk = bossData['hp'][nowZm][king - 1]
     return f'{zm}周目{king}王 [{math.floor(remainHp)}/{bdk}]  {round(remainPer, 2)}%'
 
 
